@@ -1,52 +1,43 @@
 class CheckOut
+  attr_reader :total
+
   def initialize rules
-    @itens = []
+    @shopping_cart = []
     @rules = rules
     @total = 0
   end
 
   def scan item
-    @itens << item
-    itens = @itens.uniq
-    total = 0
-
-    itens.each do |item|
-      total += calc_total_by item
-    end
-
-    @total = total
-  end
-
-  def calc_total_by item
-    counts = 0
+    @shopping_cart << item
+    itens = @shopping_cart.uniq
+    @total = 0
     
-    rule = get_rule_by item
-    @itens.each { |i| counts += 1 if i == item }
+    itens.each do |item|
+      @total += calc_total_by item
+    end
+  end
 
-    if rule[:special_price].nil?
-      total_price_item = rule[:unit_price]
-    else
-      rest = counts % rule[:special_price][:qtd]
-      prod = counts / rule[:special_price][:qtd]
-      
-      total_price_item = (rest * rule[:unit_price]) + (prod * rule[:special_price][:price])
-
+  private
+    def calc_total_by item
+      counts = 0
+      rule = get_rule_by item
+      rule.total_price_item counts(item)
     end
 
-    total_price_item
-  end
+    def get_rule_by(item)
+      rule = nil
 
-  def get_rule_by(item)
-    rule = nil
+      @rules.each do |r|
+        rule = r if item == r.item
+      end
 
-    @rules.each do |r|
-      rule = r if item == r[:item]
+      rule
     end
 
-    rule
-  end
+    def counts(item)
+      counts = 0
+      @shopping_cart.each { |i| counts += 1 if i == item }
+      counts
+    end
 
-  def total
-    @total
-  end
 end

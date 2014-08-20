@@ -1,29 +1,14 @@
 require "minitest/autorun"
 require "./check_out.rb"
+require "./rule.rb"
 
 class TestPrice < Minitest::Test
 
   RULES = [
-    {
-      item: 'A',
-      unit_price: 50,
-      special_price: { qtd: 3, price: 130 }
-    },
-    {
-      item: 'B',
-      unit_price: 30,
-      special_price: { qtd: 2, price: 45 }
-    },
-    {
-      item: 'C',
-      unit_price: 20,
-      special_price: nil
-    },
-    {
-      item: 'D',
-      unit_price: 15,
-      special_price: nil
-    }
+    Rule.new(item: 'A', unit_price: 50, special_price: { qtd: 3, price: 130 }),
+    Rule.new(item: 'B', unit_price: 30, special_price: { qtd: 2, price: 45 }),
+    Rule.new(item: 'C', unit_price: 20, special_price: nil),
+    Rule.new(item: 'D', unit_price: 15, special_price: nil)
   ]
 
   def price(goods)
