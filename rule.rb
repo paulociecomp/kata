@@ -1,18 +1,32 @@
 class Rule
   attr_reader :item, :unit_price, :special_price
 
-  def initialize options
+  def initialize(options)
     @item = options[:item]
     @unit_price = options[:unit_price]
     @special_price = options[:special_price]
   end
 
-  def total_price_item counts
-    return total_price_item = self.unit_price if self.special_price.nil?
+  def total_price_item(number_of_items)
+    return total_price_item = unit_price if special_price.nil?
     
-    rest = counts % self.special_price[:qtd]
-    prod = counts / self.special_price[:qtd]
+    number_of_items_with_unit_price = calculate_number_of_items_with_unit_price(number_of_items)
+    groups_of_items_with_special_price = calculate_groups_of_items_with_special_price(number_of_items)
     
-    total_price_item = (rest * self.unit_price) + (prod * self.special_price[:price])
+    calculate_total_price(number_of_items_with_unit_price, groups_of_items_with_special_price)
+  end
+
+  private
+
+  def calculate_number_of_items_with_unit_price(number_of_items)
+    number_of_items % special_price[:qtd]
+  end
+
+  def calculate_groups_of_items_with_special_price(number_of_items)
+    number_of_items / special_price[:qtd]
+  end
+
+  def calculate_total_price(number_of_items_with_unit_price, groups_of_items_with_special_price)
+    (number_of_items_with_unit_price * unit_price) + (groups_of_items_with_special_price * special_price[:price])
   end
 end
